@@ -1,0 +1,21 @@
+{
+    "name": "visualmx/mail",
+    "type": "project",
+    "description": "Envío de mails con soporte para plantillas",
+    "keywords": ["PEAR", "MAIL"],
+    "homepage": "https://github.com/visualmx/mail",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "VisualMX",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/visualmx/mail/issues",
+        "source": "https://github.com/visualmx/mail"
+    },
+    "require": {
+        "php": ">=5.3.0"
+    }
+}
