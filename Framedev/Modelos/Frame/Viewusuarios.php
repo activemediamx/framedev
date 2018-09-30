@@ -6,7 +6,7 @@ use LiveControl\EloquentDataTable\DataTable as DT;
 use LiveControl\EloquentDataTable\ExpressionWithName;
 class ViewusuariosElq extends Illuminate\Database\Eloquent\Model {
 
-    protected $table = 'framework.view_usuarios';
+    protected $table = DB_NAME . '.view_usuarios';
     protected $primaryKey = 'id_usuario';
     public $timestamps = false;
 

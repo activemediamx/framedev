@@ -4,7 +4,7 @@ use Illuminate\Database\Eloquent\SoftDeletingTrait;
 use Illuminate\Database\Capsule\Manager as Capsule;
 class RolesElq extends Illuminate\Database\Eloquent\Model {
 
-    protected $table = 'framework.fw_roles';
+    protected $table = DB_NAME . '.fw_roles';
     protected $primaryKey = 'id_rol';
     public $timestamps = false;
 
@@ -24,8 +24,8 @@ class RolesElq extends Illuminate\Database\Eloquent\Model {
 
     static function check_roles(){
 
-      $roles = Capsule::table('framework.fw_roles AS rol')
-                ->join('framework.cm_catalogo AS cat','rol.cat_tiporol','=','cat.id_cat')
+      $roles = Capsule::table(DB_NAME . '.fw_roles AS rol')
+                ->join(DB_NAME . '.cm_catalogo AS cat','rol.cat_tiporol','=','cat.id_cat')
                 ->select('rol.id_rol', 'rol.descripcion', 'cat.etiqueta')
                 ->get();
   		if(count($roles)>=1){
@@ -43,7 +43,7 @@ class RolesElq extends Illuminate\Database\Eloquent\Model {
 
     static function getPermiso($role,$metodo){
 
-      $metodos = Capsule::table('framework.fw_permisos')
+      $metodos = Capsule::table(DB_NAME . '.fw_permisos')
                 ->where('id_metodo','=', $metodo)
                 ->count();
 
@@ -55,7 +55,7 @@ class RolesElq extends Illuminate\Database\Eloquent\Model {
     static 	function getAccesos($id_rol,$acceso){
     		$id_rol = intval($id_rol);
     		$acceso = intval($acceso);
-        return Capsule::table('framework.fw_roles_alta')
+        return Capsule::table(DB_NAME . '.fw_roles_alta')
                   ->where('id_rol','=', $id_rol)
                   ->where('access','=', $acceso)
                   ->count();
@@ -63,7 +63,7 @@ class RolesElq extends Illuminate\Database\Eloquent\Model {
 
     static function setear_acceso($id_rol,$access,$estado){
       if($estado == 'true'){
-          $query_resp = Capsule::table('framework.fw_roles_alta')->insert([
+          $query_resp = Capsule::table(DB_NAME . '.fw_roles_alta')->insert([
               [
                 'id_rol' => $id_rol,
                 'access' => $access,
@@ -72,7 +72,7 @@ class RolesElq extends Illuminate\Database\Eloquent\Model {
               ]
           ]);
       }else if ($estado == 'false'){
-        $query_resp = Capsule::table('framework.fw_roles_alta')
+        $query_resp = Capsule::table(DB_NAME . '.fw_roles_alta')
                             ->where('id_rol', '=', $id_rol)
                             ->where('access', '=', $access)
                             ->delete();
@@ -87,7 +87,7 @@ class RolesElq extends Illuminate\Database\Eloquent\Model {
 
     static function setear_permiso($role,$metodo,$estado){
       if($estado == 'true'){
-          $query_resp = Capsule::table('framework.fw_permisos')->insert([
+          $query_resp = Capsule::table(DB_NAME . '.fw_permisos')->insert([
             [
               'id_metodo' => $metodo,
               'id_rol' => $role,
@@ -96,7 +96,7 @@ class RolesElq extends Illuminate\Database\Eloquent\Model {
             ]
         ]);
       }else if ($estado == 'false'){
-        $query_resp = Capsule::table('framework.fw_permisos')
+        $query_resp = Capsule::table(DB_NAME . '.fw_permisos')
                             ->where('id_metodo', '=', $metodo)
                             ->where('id_rol', '=', $role)
                             ->delete();
@@ -113,14 +113,14 @@ class RolesElq extends Illuminate\Database\Eloquent\Model {
   		$rol = intval($rol);
   		$metodo = intval($metodo);
 
-      return Capsule::table('framework.fw_permisos')
+      return Capsule::table(DB_NAME . '.fw_permisos')
                 ->where('id_rol','=', $rol)
                 ->where('id_metodo','=', $metodo)
                 ->count();
   	}
 
     static function getMetodos(){
-      $metodos = Capsule::table('framework.fw_metodos')
+      $metodos = Capsule::table(DB_NAME . '.fw_metodos')
                 ->orderBy('controlador', 'asc')
                 ->get();
       if(count($metodos)>=1){
@@ -130,7 +130,7 @@ class RolesElq extends Illuminate\Database\Eloquent\Model {
 
     static function get_rol($rol){
   		$rol = intval($rol);
-      $descripcion = Capsule::table('framework.fw_roles')
+      $descripcion = Capsule::table(DB_NAME . '.fw_roles')
                 ->where('id_rol','=',$rol)
                 ->select('descripcion')
                 ->get();
@@ -147,7 +147,7 @@ class RolesElq extends Illuminate\Database\Eloquent\Model {
   		foreach ($arreglo as $key => $value) {
   			$post[$key] = $value;
   		}
-      $query_resp = Capsule::table('framework.fw_roles')->insert([
+      $query_resp = Capsule::table(DB_NAME . '.fw_roles')->insert([
           [
             'descripcion' => $post['descripcion'],
             'cat_tiporol' => $post['cat_tiporol'],
@@ -187,8 +187,8 @@ class RolesElq extends Illuminate\Database\Eloquent\Model {
   	}
 
     static function queryRoles(){
-      $roles = Capsule::table('framework.cm_catalogo')
-                ->join('framework.fw_roles','fw_roles.cat_tiporol','=','cm_catalogo.id_cat')
+      $roles = Capsule::table(DB_NAME . '.cm_catalogo')
+                ->join(DB_NAME . '.fw_roles','fw_roles.cat_tiporol','=','cm_catalogo.id_cat')
                 ->select('fw_roles.id_rol', 'cm_catalogo.etiqueta', 'fw_roles.descripcion')
                 ->get();
       if(count($roles)>=1){
@@ -213,21 +213,21 @@ class RolesElq extends Illuminate\Database\Eloquent\Model {
       return $info;
     }
     static function vaciarPermisosRol($transfer){
-      Capsule::table('framework.fw_permisos')
+      Capsule::table(DB_NAME . '.fw_permisos')
                 ->where('id_rol', '=', $transfer)
                 ->delete();
     }
     static function obtenerPermisosRol($id_rol){
-      return Capsule::table('framework.fw_permisos')
-                ->join('framework.fw_roles','fw_permisos.id_rol','=','fw_roles.id_rol')
+      return Capsule::table(DB_NAME . '.fw_permisos')
+                ->join(DB_NAME . '.fw_roles','fw_permisos.id_rol','=','fw_roles.id_rol')
                 ->select('fw_permisos.id_permiso', 'fw_permisos.id_metodo', 'fw_permisos.id_rol')
                 ->where('fw_roles.id_rol', '=', $id_rol)
                 ->get();
     }
     static function connerInfo($row, $new_permission){
-      $roles = Capsule::table('framework.fw_permisos')
-                ->join('framework.fw_roles','fw_permisos.id_rol','=','fw_roles.id_rol')
-                ->join('framework.fw_metodos','fw_permisos.id_metodo','=','fw_metodos.id_metodo')
+      $roles = Capsule::table(DB_NAME . '.fw_permisos')
+                ->join(DB_NAME . '.fw_roles','fw_permisos.id_rol','=','fw_roles.id_rol')
+                ->join(DB_NAME . '.fw_metodos','fw_permisos.id_metodo','=','fw_metodos.id_metodo')
                 ->select('fw_metodos.metodo', 'fw_metodos.controlador', 'fw_roles.descripcion')
                 ->where('fw_permisos.id_permiso', '=', $row->id_permiso)
                 ->get();
@@ -248,7 +248,7 @@ class RolesElq extends Illuminate\Database\Eloquent\Model {
       }
     }
     static function insertPermiso($row,$transfer){
-      Capsule::table('framework.fw_permisos')->insert([
+      Capsule::table(DB_NAME . '.fw_permisos')->insert([
           [
             'id_metodo' => $row->id_metodo,
             'id_rol' => $transfer,
@@ -259,8 +259,8 @@ class RolesElq extends Illuminate\Database\Eloquent\Model {
     }
     static function selectUsersByRoles(HelpersMiddleware $help, $ids_roles,$id_usuario){
   		$array = array();
-      $access = Capsule::table('framework.fw_usuarios')
-                ->join('framework.fw_roles','fw_roles.id_rol','=','fw_usuarios.id_rol')
+      $access = Capsule::table(DB_NAME . '.fw_usuarios')
+                ->join(DB_NAME . '.fw_roles','fw_roles.id_rol','=','fw_usuarios.id_rol')
                 ->select(Capsule::raw('CONCAT(nombres," ",apellido_paterno," ", apellido_materno) AS nombre'),'id_usuario')
                 ->whereIn('fw_usuarios.id_rol', explode(',',$ids_roles))
                 ->get();
@@ -279,7 +279,7 @@ class RolesElq extends Illuminate\Database\Eloquent\Model {
       $accesos = self::selectRolesByAccess($id_rol);
       //Controlador::bug('selectRolesByAccess >> '.$accesos);
 
-      $roles = Capsule::table('framework.fw_roles')
+      $roles = Capsule::table(DB_NAME . '.fw_roles')
                 ->whereIn('cat_tiporol',explode(',',$cat_tiporol))
                 ->whereIn('id_rol',explode(',',$accesos))->get();
 
@@ -296,8 +296,8 @@ class RolesElq extends Illuminate\Database\Eloquent\Model {
     }
 
     static function selectRolesByAccess($id_rol){
-      $access = Capsule::table('framework.fw_roles_alta AS rolacc')
-                ->join('framework.fw_roles as rol','rolacc.access','=','rol.id_rol')
+      $access = Capsule::table(DB_NAME . '.fw_roles_alta AS rolacc')
+                ->join(DB_NAME . '.fw_roles as rol','rolacc.access','=','rol.id_rol')
                 ->select('rolacc.access', 'rol.descripcion')
                 ->where('rolacc.id_rol', '=', $id_rol)
                 ->orderBy('rolacc.access','asc')

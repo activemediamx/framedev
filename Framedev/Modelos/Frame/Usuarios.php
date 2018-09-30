@@ -6,19 +6,19 @@ use LiveControl\EloquentDataTable\DataTable as DT;
 use LiveControl\EloquentDataTable\ExpressionWithName;
 class UsuariosElq extends Illuminate\Database\Eloquent\Model {
 
-    protected $table = 'framework.fw_usuarios';
+    protected $table = DB_NAME . '.fw_usuarios';
     protected $primaryKey = 'id_usuario';
     public $timestamps = false;
 
 
     static function usuarios_bloqueados(){
-      return Capsule::table('framework.fw_usuarios')->where('cat_status','=',9)->count();
+      return Capsule::table(DB_NAME . '.fw_usuarios')->where('cat_status','=',9)->count();
     }
     static function obtener_usuarios(){
-      return Capsule::table('framework.fw_usuarios')->get();
+      return Capsule::table(DB_NAME . '.fw_usuarios')->get();
     }
     static function baja_usuario($id_usuario){
-      $query_resp = Capsule::table('framework.fw_usuarios')
+      $query_resp = Capsule::table(DB_NAME . '.fw_usuarios')
               ->where('id_usuario', $id_usuario)
               ->update([
                   'cat_status'=> 5,
@@ -40,7 +40,7 @@ class UsuariosElq extends Illuminate\Database\Eloquent\Model {
   				unlink('../uploads/perfiles/'.$avatar_actual);
   			}
 
-        Capsule::table('framework.fw_usuarios_config')
+        Capsule::table(DB_NAME . '.fw_usuarios_config')
         ->where('id_usuario', $_SESSION['id_usuario'])
         ->update([
             'avatar'=> $avatar,
@@ -50,7 +50,7 @@ class UsuariosElq extends Illuminate\Database\Eloquent\Model {
   	}
 
     static function acceptTyc($stat){
-      $result = Capsule::table('framework.fw_usuarios_config')
+      $result = Capsule::table(DB_NAME . '.fw_usuarios_config')
               ->where('id_usuario', $_SESSION['id_usuario'])
               ->update([
                   'aceptar_tyc'=> $stat,
@@ -76,7 +76,7 @@ class UsuariosElq extends Illuminate\Database\Eloquent\Model {
 
   		if($query_resp){
         // intentos en cero
-        $update_intentos = Capsule::table('framework.fw_login_log')
+        $update_intentos = Capsule::table(DB_NAME . '.fw_login_log')
                 ->where('id_usuario', $id_usuario)
                 ->orderBy('id_login_log', 'desc')
                 ->limit(1)
@@ -97,7 +97,7 @@ class UsuariosElq extends Illuminate\Database\Eloquent\Model {
 
     static function desbloquear_usuarios(){
 
-      $query_resp = Capsule::table('framework.fw_usuarios')
+      $query_resp = Capsule::table(DB_NAME . '.fw_usuarios')
                   ->select('id_usuario')
                   ->where('cat_status','=',9)->get();
 
@@ -110,7 +110,7 @@ class UsuariosElq extends Illuminate\Database\Eloquent\Model {
           $cambia_estatus->save();
 
           // intentos en cero
-          $update_intentos = Capsule::table('framework.fw_login_log')
+          $update_intentos = Capsule::table(DB_NAME . '.fw_login_log')
                   ->where('id_usuario', $usuarios->id_usuario)
                   ->orderBy('id_login_log', 'desc')
                   ->limit(1)
@@ -129,7 +129,7 @@ class UsuariosElq extends Illuminate\Database\Eloquent\Model {
   	}
 
     static function pass_chge_stat($stat,$user){
-      $result = Capsule::table('framework.fw_usuarios')
+      $result = Capsule::table(DB_NAME . '.fw_usuarios')
               ->where('id_usuario', $user)
               ->update([
                   'cat_pass_chge'=> $stat,
@@ -140,7 +140,7 @@ class UsuariosElq extends Illuminate\Database\Eloquent\Model {
   	}
 
     static function updateIngreso($fecha_ingreso,$id_usuario){
-      Capsule::table('framework.fw_usuarios_config')
+      Capsule::table(DB_NAME . '.fw_usuarios_config')
               ->where('id_usuario', $id_usuario)
               ->update([
                   'fecha_ingreso'=> $fecha_ingreso,
@@ -154,12 +154,12 @@ class UsuariosElq extends Illuminate\Database\Eloquent\Model {
   			$post[$key] = $value;
   		}
   		if(($post['password'] == $post['password2'])&&($post['password'])){
-        Capsule::table('framework.fw_usuarios')
+        Capsule::table(DB_NAME . '.fw_usuarios')
                 ->where('id_usuario', $_SESSION['id_usuario'])
                 ->update(['password'=> md5($post['password'])]);
   		}
 
-          Capsule::table('framework.fw_usuarios')
+          Capsule::table(DB_NAME . '.fw_usuarios')
                   ->where('id_usuario', $_SESSION['id_usuario'])
                   ->update([
                       'correo'=> $post['correo'],
@@ -174,7 +174,7 @@ class UsuariosElq extends Illuminate\Database\Eloquent\Model {
   					$activar_paginado = (!empty ($post['activar_paginado'])) ? 1 : 0;
   					$paginacion = $post['paginacion'] ? $post['paginacion'] : 0;
 
-            Capsule::table('framework.fw_usuarios_config')
+            Capsule::table(DB_NAME . '.fw_usuarios_config')
                   ->where('id_usuario', $_SESSION['id_usuario'])
                   ->update([
                       'paginacion'=> $paginacion,
@@ -193,11 +193,11 @@ class UsuariosElq extends Illuminate\Database\Eloquent\Model {
   			$post[$key] = $value;
   		}
   		if(($post['password'] == $post['password2'])&&($post['password'])){
-        Capsule::table('framework.fw_usuarios')
+        Capsule::table(DB_NAME . '.fw_usuarios')
                 ->where('id_usuario', $post['id_usuario'])
                 ->update(['password'=> md5($post['password'])]);
   		}
-          $query_resp = Capsule::table('framework.fw_usuarios')
+          $query_resp = Capsule::table(DB_NAME . '.fw_usuarios')
                             ->where('id_usuario', $post['id_usuario'])
                             ->update([
                                 'id_ubicacion' => $post['id_ubicacion'],
@@ -221,7 +221,7 @@ class UsuariosElq extends Illuminate\Database\Eloquent\Model {
   	}
 
     static function eliminar_token($token){
-      $query_resp = Capsule::table('framework.fw_lost_password')
+      $query_resp = Capsule::table(DB_NAME . '.fw_lost_password')
                             ->where('token', $token)
                             ->delete();
   		return $query_resp;
@@ -231,7 +231,7 @@ class UsuariosElq extends Illuminate\Database\Eloquent\Model {
 
   		if(isset($_SESSION['id_usuario'])){$mod_user = $_SESSION['id_usuario'];}else{$mod_user = $id_usuario;}
 
-      $query_resp = Capsule::table('framework.fw_usuarios')
+      $query_resp = Capsule::table(DB_NAME . '.fw_usuarios')
                             ->where('id_usuario', $id_usuario)
                             ->update([
                                 'password' => md5($pass),
@@ -241,7 +241,7 @@ class UsuariosElq extends Illuminate\Database\Eloquent\Model {
   	}
 
     static function verifica_token($token){
-      $lost_pass = Capsule::table('framework.fw_lost_password')->where('token','=',$token)->get();
+      $lost_pass = Capsule::table(DB_NAME . '.fw_lost_password')->where('token','=',$token)->get();
 
       $array = array();
 
@@ -260,7 +260,7 @@ class UsuariosElq extends Illuminate\Database\Eloquent\Model {
 
     static function consulta_correo($correo){
 
-  		$query_resp = Capsule::table('framework.fw_usuarios')->where('correo','=',$correo)->count();
+  		$query_resp = Capsule::table(DB_NAME . '.fw_usuarios')->where('correo','=',$correo)->count();
 
   		if($query_resp > 0){
   			$respuesta = array('resp' => true, 'datos' => $query_resp );
@@ -272,7 +272,7 @@ class UsuariosElq extends Illuminate\Database\Eloquent\Model {
 
     static function consulta_login($usuario){
 
-  		$query_resp = Capsule::table('framework.fw_usuarios')->where('usuario','=',$usuario)->count();
+  		$query_resp = Capsule::table(DB_NAME . '.fw_usuarios')->where('usuario','=',$usuario)->count();
 
   		if($query_resp > 0){
   			$respuesta = array('resp' => true, 'datos' => $query_resp );
@@ -312,7 +312,7 @@ class UsuariosElq extends Illuminate\Database\Eloquent\Model {
 
       if($respuesta['resp'] == true ){
 
-        $id_usuario = Capsule::table('framework.fw_usuarios')->insertGetId(
+        $id_usuario = Capsule::table(DB_NAME . '.fw_usuarios')->insertGetId(
             [
                 'id_ubicacion' => $post['id_ubicacion'],
                 'password' => md5($post['password']),
@@ -354,7 +354,7 @@ class UsuariosElq extends Illuminate\Database\Eloquent\Model {
   	}
 
     static function perfil_usuario($user_id){
-      $perfil = Capsule::table('framework.fw_usuarios_config')->where('id_usuario', $user_id)->get();
+      $perfil = Capsule::table(DB_NAME . '.fw_usuarios_config')->where('id_usuario', $user_id)->get();
 
       if($perfil[0]->id_usuario){
         foreach ($perfil as $row) {
@@ -370,11 +370,11 @@ class UsuariosElq extends Illuminate\Database\Eloquent\Model {
     }
 
     static function crear_perfil($id_usuario){
-      $count = Capsule::table('framework.fw_usuarios_config')->where('id_usuario', '=', $id_usuario)->count();
+      $count = Capsule::table(DB_NAME . '.fw_usuarios_config')->where('id_usuario', '=', $id_usuario)->count();
       if($count == 1){
         return true;
       }else{
-        Capsule::table('framework.fw_usuarios_config')->insert(
+        Capsule::table(DB_NAME . '.fw_usuarios_config')->insert(
             [
                 'id_usuario' => $id_usuario,
                 'user_alta' => $_SESSION['id_usuario'],

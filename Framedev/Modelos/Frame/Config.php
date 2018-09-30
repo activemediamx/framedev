@@ -4,7 +4,7 @@ use Illuminate\Database\Eloquent\SoftDeletingTrait;
 use Illuminate\Database\Capsule\Manager as Capsule;
 class ConfigElq extends Illuminate\Database\Eloquent\Model {
 
-    protected $table = 'framework.fw_config';
+    protected $table = DB_NAME . '.fw_config';
     protected $primaryKey = 'id_config';
     public $timestamps = false;
 

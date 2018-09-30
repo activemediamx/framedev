@@ -6,14 +6,14 @@ use LiveControl\EloquentDataTable\DataTable as DT;
 use LiveControl\EloquentDataTable\ExpressionWithName;
 class LoginElq extends Illuminate\Database\Eloquent\Model {
 
-    protected $table = 'framework.fw_login';
+    protected $table = DB_NAME . '.fw_login';
     protected $primaryKey = 'id_login';
     public $timestamps = false;
 
 
     static function recuperar_datos($correo,$token){
 
-      $idu = Capsule::table('framework.fw_usuarios')
+      $idu = Capsule::table(DB_NAME . '.fw_usuarios')
                 ->select('id_usuario','usuario')
                 ->where('correo', '=', $correo)
                 ->get();
@@ -28,8 +28,8 @@ class LoginElq extends Illuminate\Database\Eloquent\Model {
     }
 
     static function insert_lost_password($token,$id,$correo){
-      Capsule::table('framework.fw_lost_password')->where('correo', '=', $correo)->delete();
-      Capsule::table('framework.fw_lost_password')->insert(
+      Capsule::table(DB_NAME . '.fw_lost_password')->where('correo', '=', $correo)->delete();
+      Capsule::table(DB_NAME . '.fw_lost_password')->insert(
           [
               'token' => $token,
               'id_usuario' => $id,
@@ -78,13 +78,13 @@ class LoginElq extends Illuminate\Database\Eloquent\Model {
     }
 
     static function inhabilitarUsuario($id_usuario){
-      Capsule::table('framework.fw_usuarios')
+      Capsule::table(DB_NAME . '.fw_usuarios')
             ->where('id_usuario', $id_usuario)
             ->update(['cat_status' => 9,'user_mod'=>$id_usuario]);
     }
 
     static function insertLoggerLogin($id_usuario){
-        Capsule::table('framework.fw_login_log')->insert([
+        Capsule::table(DB_NAME . '.fw_login_log')->insert([
             [
               'id_usuario' => $id_usuario,
               'ip' => $_SERVER['REMOTE_ADDR'],
@@ -95,17 +95,17 @@ class LoginElq extends Illuminate\Database\Eloquent\Model {
     }
 
     static function updateLoggerLogin($id_login_log){
-      $intentos = Capsule::table('framework.fw_login_log')
+      $intentos = Capsule::table(DB_NAME . '.fw_login_log')
             ->select('intentos')
             ->where('id_login_log', $id_login_log)->get();
 
-      Capsule::table('framework.fw_login_log')
+      Capsule::table(DB_NAME . '.fw_login_log')
             ->where('id_login_log', $id_login_log)
             ->update(['ip' => $_SERVER['REMOTE_ADDR'],'fecha'=>date("Y-m-d H:i:s"),'intentos'=>$intentos[0]->intentos + 1]);
     }
 
     static function selectLoggerLogin($id_usuario){
-      $logerLogin = Capsule::table('framework.fw_login_log')
+      $logerLogin = Capsule::table(DB_NAME . '.fw_login_log')
                 ->select('id_login_log','ip','fecha','intentos')
                 ->where('id_usuario', '=', $id_usuario)
                 ->orderBy('id_login_log', 'desc')
@@ -128,7 +128,7 @@ class LoginElq extends Illuminate\Database\Eloquent\Model {
     }
 
     static function getIdUsuario($usuario){
-      $idu = Capsule::table('framework.fw_usuarios')
+      $idu = Capsule::table(DB_NAME . '.fw_usuarios')
                 ->select('id_usuario')
                 ->where('usuario', '=', $usuario)
                 ->get();
@@ -157,7 +157,7 @@ class LoginElq extends Illuminate\Database\Eloquent\Model {
 
     static function existeUsuario($usuario){
 
-      $idu = Capsule::table('framework.fw_usuarios')
+      $idu = Capsule::table(DB_NAME . '.fw_usuarios')
                 ->select('id_usuario')
                 ->where('usuario', '=', $usuario)
                 ->get();
@@ -184,8 +184,8 @@ class LoginElq extends Illuminate\Database\Eloquent\Model {
 
     static function permisos($rol){
 
-      $permisos = Capsule::table('framework.fw_permisos as fwp')
-                ->join('framework.fw_metodos as fwm','fwp.id_metodo','=','fwm.id_metodo')
+      $permisos = Capsule::table(DB_NAME . '.fw_permisos as fwp')
+                ->join(DB_NAME . '.fw_metodos as fwm','fwp.id_metodo','=','fwm.id_metodo')
                 ->select('fwm.controlador', 'fwm.metodo')
                 ->where('fwp.id_rol', '=', $rol)
                 ->get();
@@ -217,7 +217,7 @@ class LoginElq extends Illuminate\Database\Eloquent\Model {
     }
 
     static function getStatusUser($usuario){
-      $status = Capsule::table('framework.fw_usuarios')
+      $status = Capsule::table(DB_NAME . '.fw_usuarios')
                 ->select('cat_status')
                 ->where('usuario', '=', $usuario)
                 ->get();
@@ -239,8 +239,8 @@ class LoginElq extends Illuminate\Database\Eloquent\Model {
 
       $password_md5=md5($_POST['password']);
 
-      $logged = Capsule::table('framework.fw_usuarios as fws')
-                ->join('framework.fw_usuarios_config AS fwu', 'fwu.id_usuario', '=', 'fws.id_usuario')
+      $logged = Capsule::table(DB_NAME . '.fw_usuarios as fws')
+                ->join(DB_NAME . '.fw_usuarios_config AS fwu', 'fwu.id_usuario', '=', 'fws.id_usuario')
                 ->where('fws.usuario', '=', $_POST['usuario'])
                 ->where('fws.password', '=', $password_md5)
                 ->where('fws.cat_status', '=', 3)
@@ -252,7 +252,7 @@ class LoginElq extends Illuminate\Database\Eloquent\Model {
         foreach ($logged as $row) {
           self::session_duplicada($help,$row->id_usuario);
 
-          session_name(SITE_NAME);
+          //session_name(SITE_NAME);
           $_SESSION['id_usuario']=$row->id_usuario;
           $_SESSION['id_rol']=$row->id_rol;
           $_SESSION['hora_acceso']= time();
@@ -420,10 +420,10 @@ class LoginElq extends Illuminate\Database\Eloquent\Model {
     }
 
     static function whoisLogged(){
-       $result = Capsule::table('framework.fw_login AS fwl')
+       $result = Capsule::table(DB_NAME . '.fw_login AS fwl')
                         ->select('fwl.id_usuario AS id_usuario', 'fwl.session_id AS session_id')
                         ->where('fwl.open', '=', 1)
-                        ->join('framework.fw_usuarios AS fwu', 'fwl.id_usuario', '=', 'fwu.id_usuario')
+                        ->join(DB_NAME . '.fw_usuarios AS fwu', 'fwl.id_usuario', '=', 'fwu.id_usuario')
                         ->orderBy('fwl.id_usuario', 'asc')
                         ->get();
 

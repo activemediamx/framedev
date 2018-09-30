@@ -6,13 +6,13 @@ use LiveControl\EloquentDataTable\DataTable as DT;
 use LiveControl\EloquentDataTable\ExpressionWithName;
 class ControllersElq extends Illuminate\Database\Eloquent\Model {
 
-    protected $table = 'framework.fw_metodos';
+    protected $table = DB_NAME . '.fw_metodos';
     protected $primaryKey = 'id_metodo';
     public $timestamps = false;
 
 
     static function eliminar_metodo($id_metodo){
-      $sql0 = Capsule::table('framework.fw_permisos')->where('id_metodo', '=', $id_metodo)->delete();
+      $sql0 = Capsule::table(DB_NAME . '.fw_permisos')->where('id_metodo', '=', $id_metodo)->delete();
       if($sql0){
         $sql1 = ControllersElq::where('id_metodo','=',$id_metodo)->delete();
       }

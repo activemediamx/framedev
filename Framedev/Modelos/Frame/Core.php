@@ -10,7 +10,7 @@ class CoreElq extends Illuminate\Database\Eloquent\Model {
 
     static function updateLogin(){
 
-        Capsule::table('framework.fw_login')
+        Capsule::table(DB_NAME . '.fw_login')
             ->where('id_usuario', $_SESSION['id_usuario'])
             ->where('open', 1)
             ->update(['ultima_verificacion' => date("Y-m-d H:i:s")]);

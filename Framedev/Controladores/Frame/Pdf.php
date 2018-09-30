@@ -17,8 +17,8 @@ class Pdf extends Controlador
 
     $datos_p = $persona->searchByIdPersona($id_persona);
     $edad_persona = $this->help->getYearsOld($datos_p->fecha_nacimiento);
-    $sexo_persona = $catalog->getNameByIdCatalogo('framework.cm_catalogo','etiqueta','id_cat',$datos_p->id_sexo);
-    $nacionalidad = $catalog->getNameByIdCatalogo('framework.cm_catalogo','etiqueta','id_cat',$datos_p->id_nacionalidad);
+    $sexo_persona = $catalog->getNameByIdCatalogo(DB_NAME . '.cm_catalogo','etiqueta','id_cat',$datos_p->id_sexo);
+    $nacionalidad = $catalog->getNameByIdCatalogo(DB_NAME . '.cm_catalogo','etiqueta','id_cat',$datos_p->id_nacionalidad);
 
     $datos_episodio = $episodio->getDataByEpisodio($id_episodio);
     $datos_dictamen = $this->help->toArray($model_dictamen->getDataDictamenFinal($id_episodio));
@@ -75,7 +75,7 @@ class Pdf extends Controlador
     $datos_p = $persona->searchByIdPersona($id_persona);
     $full_name = $datos_p->nombre_paciente.' '.$datos_p->apaterno_paciente.' '.$datos_p->amaterno_paciente;
     $edad_persona = $this->help->getYearsOld($datos_p->fecha_nacimiento);
-    $sexo_persona = $catalog->getNameByIdCatalogo('framework.cm_catalogo','etiqueta','id_cat',$datos_p->id_sexo);
+    $sexo_persona = $catalog->getNameByIdCatalogo(DB_NAME . '.cm_catalogo','etiqueta','id_cat',$datos_p->id_sexo);
 
     $num_expediente = $expediente->getExpedientePersona($id_persona);
     $datos_episodio = $episodio->getEpisodioActivo($id_persona);

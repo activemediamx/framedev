@@ -4,7 +4,7 @@ use Illuminate\Database\Eloquent\SoftDeletingTrait;
 use Illuminate\Database\Capsule\Manager as Capsule;
 class UbicacionElq extends Illuminate\Database\Eloquent\Model {
 
-    protected $table = 'framework.fw_ubicacion';
+    protected $table = DB_NAME . '.fw_ubicacion';
     protected $primaryKey = 'id_ubicacion';
     public $timestamps = false;
 

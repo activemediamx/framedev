@@ -6,7 +6,7 @@ use LiveControl\EloquentDataTable\DataTable as DT;
 use LiveControl\EloquentDataTable\ExpressionWithName;
 class CatalogoElq extends Illuminate\Database\Eloquent\Model {
 
-    protected $table = 'framework.cm_catalogo';
+    protected $table = DB_NAME . '.cm_catalogo';
     protected $primaryKey = 'id_cat';
     public $timestamps = false;
 
@@ -165,7 +165,7 @@ class CatalogoElq extends Illuminate\Database\Eloquent\Model {
     }
 
     public function getAllDataCatalogo($name_catalogo){
-      $data = Capsule::table('framework.cm_catalogo')
+      $data = Capsule::table(DB_NAME . '.cm_catalogo')
               ->select('*')
               ->where('catalogo',$name_catalogo)
               ->where('activo',1)

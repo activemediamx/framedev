@@ -4,7 +4,7 @@ use Illuminate\Database\Eloquent\SoftDeletingTrait;
 use Illuminate\Database\Capsule\Manager as Capsule;
 class WebhookElq extends Illuminate\Database\Eloquent\Model {
 
-    protected $table = 'framework.fw_webhook';
+    protected $table = DB_NAME . '.fw_webhook';
     protected $primaryKey = 'id_webhook';
     public $timestamps = false;
 

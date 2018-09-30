@@ -51,7 +51,7 @@ class Aplicacion
 		} else {
 
 			if(!$this->url_controladores){
-				require URL_CONTROLADOR.'Inicio.php';
+				require URL_CONTROLADOR.'Frame/Inicio.php';
 				$home = new Inicio();
 				$home->index();
 			}else{

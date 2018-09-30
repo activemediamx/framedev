@@ -6,7 +6,7 @@ use LiveControl\EloquentDataTable\DataTable as DT;
 use LiveControl\EloquentDataTable\ExpressionWithName;
 class ViewlogElq extends Illuminate\Database\Eloquent\Model {
 
-    protected $table = 'framework.view_log';
+    protected $table = DB_NAME . '.view_log';
     protected $primaryKey = 'id_login';
     public $timestamps = false;
 
